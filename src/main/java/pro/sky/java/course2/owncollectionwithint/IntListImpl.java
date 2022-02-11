@@ -2,49 +2,18 @@ package pro.sky.java.course2.owncollectionwithint;
 
 import java.util.Arrays;
 
-public class intListImpl implements intList {
+public class IntListImpl implements IntList {
     private int[] storage;
     private int size;
 
-    public intListImpl() {
+    public IntListImpl() {
         storage = new int[10];
     }
 
-    public void sortWithQuickSort(int[] arr){
-        long[] longs = new long[3];
-        int[] firstCopy = createRandomArray(10_000);
-        int[] secondCopy = Arrays.copyOf(firstCopy,firstCopy.length);
-        int[] thirdCopy = Arrays.copyOf(firstCopy,firstCopy.length);
-
-        long start = System.currentTimeMillis();
-        sortBubble(firstCopy);
-        long timeOfBubbleSort = System.currentTimeMillis() - start;
-        System.out.println(timeOfBubbleSort);
-        sortSelection(secondCopy);
-        long timeOfSelectionSort = System.currentTimeMillis() - timeOfBubbleSort - start;
-        System.out.println(System.currentTimeMillis() - start);
-        sortInsertion(thirdCopy);
-        long timeOfInsertionSort = System.currentTimeMillis() - timeOfSelectionSort - timeOfBubbleSort - start;
-        System.out.println(System.currentTimeMillis() - start);
-        longs[0] = timeOfBubbleSort;
-        longs[1] = timeOfSelectionSort;
-        longs[2] = timeOfInsertionSort;
-        long min = longs[0];
-        for (long aLong : longs) {
-            if (aLong < min) {
-                min = aLong;
-            }
-        }
-        if(min == longs[0]){
-            sortBubble(arr);
-        }
-        if(min == longs[1]){
-            sortSelection(arr);
-        }
-        if(min == longs[2]){
-            sortInsertion(arr);
-        }
+    public void sortWithQuickSort(int[] arr) {
+        findTheQuickestSort(arr);
     }
+
     public static void sortBubble(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - 1 - i; j++) {
@@ -112,12 +81,7 @@ public class intListImpl implements intList {
 
     @Override
     public int add(int item) {
-        if (size == storage.length) {
-            grow();
-        }
-
-        storage[size++] = item;
-        return item;
+        return add(size, item);
     }
 
     @Override
@@ -142,15 +106,8 @@ public class intListImpl implements intList {
 
     @Override
     public int removeByItem(int item) {
-
-        if (indexOf(item) == -1) {
-            throw new ElementNotFoundException();
-        }
-            int i = indexOf(item);
-            System.arraycopy(storage, i + 1, storage, i, storage.length - i - 1);
-            size--;
-
-        return item;
+        int index = indexOf(item);
+        return removeByIndex(index);
     }
 
     @Override
@@ -203,7 +160,7 @@ public class intListImpl implements intList {
     }
 
     @Override
-    public boolean equals(intList otherList) {
+    public boolean equals(IntList otherList) {
 
         if (otherList == null) {
             throw new NullInputParameterException();
@@ -242,6 +199,42 @@ public class intListImpl implements intList {
     public void validateIndex(int index) {
         if (index > size || index < 0) {
             throw new BeyondTheSizeException();
+        }
+    }
+
+    public void findTheQuickestSort(int[] arr) {
+        long[] longs = new long[3];
+        int[] firstCopy = createRandomArray(10_000);
+        int[] secondCopy = Arrays.copyOf(firstCopy, firstCopy.length);
+        int[] thirdCopy = Arrays.copyOf(firstCopy, firstCopy.length);
+
+        long start = System.currentTimeMillis();
+        sortBubble(firstCopy);
+        long timeOfBubbleSort = System.currentTimeMillis() - start;
+        System.out.println(timeOfBubbleSort);
+        sortSelection(secondCopy);
+        long timeOfSelectionSort = System.currentTimeMillis() - timeOfBubbleSort - start;
+        System.out.println(System.currentTimeMillis() - start);
+        sortInsertion(thirdCopy);
+        long timeOfInsertionSort = System.currentTimeMillis() - timeOfSelectionSort - timeOfBubbleSort - start;
+        System.out.println(System.currentTimeMillis() - start);
+        longs[0] = timeOfBubbleSort;
+        longs[1] = timeOfSelectionSort;
+        longs[2] = timeOfInsertionSort;
+        long min = longs[0];
+        for (long aLong : longs) {
+            if (aLong < min) {
+                min = aLong;
+            }
+        }
+        if (min == longs[0]) {
+            sortBubble(arr);
+        }
+        if (min == longs[1]) {
+            sortSelection(arr);
+        }
+        if (min == longs[2]) {
+            sortInsertion(arr);
         }
     }
 }

@@ -1,7 +1,7 @@
 package pro.sky.java.course2.owncollectionwithint;
 
 
-public interface intList {
+public interface IntList {
 
     // Добавление элемента.
     // Вернуть добавленный элемент
@@ -61,7 +61,7 @@ public interface intList {
     // Сравнить текущий список с другим.
     // Вернуть true/false или исключение,
     // если передан null.
-    boolean equals(intList otherList);
+    boolean equals(IntList otherList);
 
     // Вернуть фактическое количество элементов.
     int size();
