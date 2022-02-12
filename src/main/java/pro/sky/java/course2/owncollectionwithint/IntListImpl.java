@@ -10,40 +10,6 @@ public class IntListImpl implements IntList {
         storage = new int[10];
     }
 
-    public void sortWithQuickSort(int[] arr) {
-        findTheQuickestSort(arr);
-    }
-
-    public static void sortBubble(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            for (int j = 0; j < arr.length - 1 - i; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    swapElements(arr, j, j + 1);
-                }
-            }
-        }
-    }
-
-    public static int[] createRandomArray(int length){
-        int[] ints = new int[length];
-        for (int i = 0; i < ints.length; i++) {
-            ints[i] = (int) (Math.random() * 100);
-        }
-        return ints;
-    }
-
-    public static void sortSelection(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            int minElementIndex = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[j] < arr[minElementIndex]) {
-                    minElementIndex = j;
-                }
-            }
-            swapElements(arr, i, minElementIndex);
-        }
-    }
-
     public static void sortInsertion(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
             int temp = arr[i];
@@ -56,13 +22,14 @@ public class IntListImpl implements IntList {
         }
     }
 
-    private static int binarySearch(int[] sortedArray, int key, int low, int high) {
-            int index = Integer.MAX_VALUE;
 
-            while (low <= high) {
-                int mid = (low + high) / 2;
-                if (sortedArray[mid] < key) {
-                    low = mid + 1;
+    private static int binarySearch(int[] sortedArray, int key, int low, int high) {
+        int index = Integer.MAX_VALUE;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (sortedArray[mid] < key) {
+                low = mid + 1;
                 } else if (sortedArray[mid] > key) {
                     high = mid - 1;
                 } else if (sortedArray[mid] == key) {
@@ -73,11 +40,6 @@ public class IntListImpl implements IntList {
             return index;
     }
 
-    private static void swapElements(int[] arr, int indexA, int indexB) {
-        int tmp = arr[indexA];
-        arr[indexA] = arr[indexB];
-        arr[indexB] = tmp;
-    }
 
     @Override
     public int add(int item) {
@@ -110,15 +72,8 @@ public class IntListImpl implements IntList {
         return removeByIndex(index);
     }
 
-    @Override
-    public int removeByIndex(int index) {
-        validateIndex(index);
-        int item = storage[index];
-        int i = indexOf(item);
-        System.arraycopy(storage, i + 1, storage, i, storage.length - i - 1);
-        size--;
-
-        return item;
+    public void sortWithQuickSort(int[] arr) {
+        sortInsertion(arr);
     }
 
     @Override
@@ -155,8 +110,21 @@ public class IntListImpl implements IntList {
         return storage[index];
     }
 
-    public void grow() {
-            storage = Arrays.copyOf(storage, size * 2);
+    @Override
+    public int removeByIndex(int index) {
+        validateIndex(index);
+        int item = storage[index];
+        int i = indexOf(item);
+        System.arraycopy(storage, i + 1, storage, i, storage.length - i - 1);
+        size--;
+        if (size < storage.length / 2) {
+            resize();
+        }
+        return item;
+    }
+
+    private void grow() {
+        storage = Arrays.copyOf(storage, (int) (size * 1.5));
     }
 
     @Override
@@ -202,39 +170,7 @@ public class IntListImpl implements IntList {
         }
     }
 
-    public void findTheQuickestSort(int[] arr) {
-        long[] longs = new long[3];
-        int[] firstCopy = createRandomArray(10_000);
-        int[] secondCopy = Arrays.copyOf(firstCopy, firstCopy.length);
-        int[] thirdCopy = Arrays.copyOf(firstCopy, firstCopy.length);
-
-        long start = System.currentTimeMillis();
-        sortBubble(firstCopy);
-        long timeOfBubbleSort = System.currentTimeMillis() - start;
-        System.out.println(timeOfBubbleSort);
-        sortSelection(secondCopy);
-        long timeOfSelectionSort = System.currentTimeMillis() - timeOfBubbleSort - start;
-        System.out.println(System.currentTimeMillis() - start);
-        sortInsertion(thirdCopy);
-        long timeOfInsertionSort = System.currentTimeMillis() - timeOfSelectionSort - timeOfBubbleSort - start;
-        System.out.println(System.currentTimeMillis() - start);
-        longs[0] = timeOfBubbleSort;
-        longs[1] = timeOfSelectionSort;
-        longs[2] = timeOfInsertionSort;
-        long min = longs[0];
-        for (long aLong : longs) {
-            if (aLong < min) {
-                min = aLong;
-            }
-        }
-        if (min == longs[0]) {
-            sortBubble(arr);
-        }
-        if (min == longs[1]) {
-            sortSelection(arr);
-        }
-        if (min == longs[2]) {
-            sortInsertion(arr);
-        }
+    private void resize() {
+        storage = Arrays.copyOf(storage, size / 3);
     }
 }
